@@ -1,34 +1,28 @@
-package by.savich.secretService;
+package by.savich.secretservice.service;
 
-import by.savich.secretService.entity.Secret;
-import by.savich.secretService.repository.RandomString;
-import by.savich.secretService.repository.SecretRepository;
-import by.savich.secretService.service.SecretService;
+import by.savich.secretservice.entity.Secret;
+import by.savich.secretservice.service.RandomGenerator;
+import by.savich.secretservice.repository.SecretRepository;
+import by.savich.secretservice.service.SecretService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class SecretServiceApplicationTests {
+class SecretServiceTests {
 
     SecretRepository secretRepository;
     SecretService secretService;
-    RandomString randomString;
+    RandomGenerator randomGenerator;
 
     @BeforeEach
     void init() {
         secretRepository = Mockito.mock(SecretRepository.class);
-        randomString = Mockito.mock(RandomString.class);
-        secretService = new SecretService(secretRepository, randomString);
+        randomGenerator = Mockito.mock(RandomGenerator.class);
+        secretService = new SecretService(secretRepository, randomGenerator);
     }
 
     @Test
