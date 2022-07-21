@@ -55,11 +55,11 @@ class SecretControllerIntegrationTest {
                 HttpMethod.POST, httpEntity, Secret.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(response.getBody().getSecretInformation()).isNotNull();
-        assertThat(response.getBody().getPassPhrase()).isNotNull();
         assertThat(response.getBody().getGeneratedCode()).isNotNull();
         assertThat(response.getBody().getSecretInformation()).isEqualTo("any information");
         assertThat(response.getBody().getPassPhrase()).isEqualTo("java");
+
+        assertThat(secretRepository.findAll()).isNotNull();
 
     }
 
@@ -69,7 +69,7 @@ class SecretControllerIntegrationTest {
 
         secret.setSecretInformation("any information");
         secret.setPassPhrase("java");
-        secret.setGeneratedCode(randomGenerator.randomCode(12));
+        secret.setGeneratedCode(randomGenerator.generateRandomCode(12));
         secretRepository.save(secret);
 
         Secret checkSecret = new Secret();
@@ -80,6 +80,11 @@ class SecretControllerIntegrationTest {
         Secret resultSecret = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
                 httpEntity, new ParameterizedTypeReference<Secret>() {
                 }).getBody();
+
+        ResponseEntity<Secret> resultSecret2 = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
+                httpEntity, new ParameterizedTypeReference<Secret>() {
+                });
+        assertThat(resultSecret2.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThat(resultSecret).isEqualTo(secret);
     }

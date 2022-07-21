@@ -9,7 +9,7 @@ public class RandomGenerator {
     static private final String CHARACTER_SEQUENCE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private final SecureRandom secureRandom = new SecureRandom();
 
-    public String randomCode(int size){
+    public String generateRandomCode(int size){
         StringBuilder sb = new StringBuilder(size);
         for(int i = 0; i < size; i++)
             sb.append(CHARACTER_SEQUENCE.charAt(secureRandom.nextInt(CHARACTER_SEQUENCE.length())));
