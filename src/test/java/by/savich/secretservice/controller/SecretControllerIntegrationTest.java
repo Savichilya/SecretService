@@ -1,8 +1,8 @@
-package by.savich.secretService.controller;
+package by.savich.secretservice.controller;
 
-import by.savich.secretService.entity.Secret;
-import by.savich.secretService.repository.RandomString;
-import by.savich.secretService.repository.SecretRepository;
+import by.savich.secretservice.entity.Secret;
+import by.savich.secretservice.service.RandomGenerator;
+import by.savich.secretservice.repository.SecretRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SecretControllerIntegrationTest {
@@ -31,7 +27,7 @@ class SecretControllerIntegrationTest {
     private SecretRepository secretRepository;
 
     @Autowired
-    private RandomString randomString;
+    private RandomGenerator randomGenerator;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -53,13 +49,18 @@ class SecretControllerIntegrationTest {
         Secret secret = new Secret();
         secret.setSecretInformation("any information");
         secret.setPassPhrase("java");
-        secret.setGeneratedCode(randomString.randomCode(12));
-        secretRepository.save(secret);
 
         HttpEntity<Secret> httpEntity = new HttpEntity<>(secret);
-        ResponseEntity<Void> response = this.restTemplate.exchange(host + "/secret/saveSecret",
-                HttpMethod.POST, httpEntity, Void.class);
+        ResponseEntity<Secret> response = this.restTemplate.exchange(host + "/secret/save",
+                HttpMethod.POST, httpEntity, Secret.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(response.getBody().getSecretInformation()).isNotNull();
+        assertThat(response.getBody().getPassPhrase()).isNotNull();
+        assertThat(response.getBody().getGeneratedCode()).isNotNull();
+        assertThat(response.getBody().getSecretInformation()).isEqualTo("any information");
+        assertThat(response.getBody().getPassPhrase()).isEqualTo("java");
+
     }
 
     @Test
@@ -68,7 +69,7 @@ class SecretControllerIntegrationTest {
 
         secret.setSecretInformation("any information");
         secret.setPassPhrase("java");
-        secret.setGeneratedCode(randomString.randomCode(12));
+        secret.setGeneratedCode(randomGenerator.randomCode(12));
         secretRepository.save(secret);
 
         Secret checkSecret = new Secret();
@@ -76,7 +77,7 @@ class SecretControllerIntegrationTest {
         checkSecret.setGeneratedCode(secret.getGeneratedCode());
 
         HttpEntity<Secret> httpEntity = new HttpEntity<>(checkSecret);
-        Secret resultSecret = this.restTemplate.exchange(host + "/secret/getSecret", HttpMethod.POST,
+        Secret resultSecret = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
                 httpEntity, new ParameterizedTypeReference<Secret>() {
                 }).getBody();
 

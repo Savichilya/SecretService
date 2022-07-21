@@ -1,7 +1,7 @@
-package by.savich.secretService.controller;
+package by.savich.secretservice.controller;
 
-import by.savich.secretService.entity.Secret;
-import by.savich.secretService.service.SecretService;
+import by.savich.secretservice.entity.Secret;
+import by.savich.secretservice.service.SecretService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,13 +14,13 @@ public class SecretController {
         this.secretService = secretService;
     }
 
-    @PostMapping("/saveSecret")
-    public void saveSecret(@RequestBody Secret secret) {
-        secretService.saveSecret(secret);
+    @PostMapping("/save")
+    public Secret saveSecret(@RequestBody Secret secret) {
+        return secretService.saveSecret(secret);
     }
 
-    @PostMapping("/getSecret")
-    public Secret getSecret(@RequestBody Secret secret) {
+    @PostMapping("/read")
+    public Secret readSecret(@RequestBody Secret secret) {
         return secretService.getSecretByCodeAndPhrase(secret);
     }
 }
