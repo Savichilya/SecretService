@@ -10,8 +10,9 @@ class RandomGeneratorTest {
     @Test
     void shouldGenerateRandomWhenCallRandomCodeMethod() {
         RandomGenerator randomGenerator = new RandomGenerator();
-        String code=randomGenerator.randomCode(12);
+        String code=randomGenerator.generateRandomCode(12);
         assertThat(code).isNotNull();
+        assertThat(code.length()).isEqualTo(12);
     }
 
 }

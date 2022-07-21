@@ -18,7 +18,7 @@ public class SecretService {
     }
 
     public Secret saveSecret(Secret secret) {
-        secret.setGeneratedCode(randomGenerator.randomCode(12));
+        secret.setGeneratedCode(randomGenerator.generateRandomCode(12));
         return secretRepository.save(secret);
     }
 
