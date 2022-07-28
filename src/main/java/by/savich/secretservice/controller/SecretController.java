@@ -1,5 +1,7 @@
 package by.savich.secretservice.controller;
 
+import by.savich.secretservice.dto.ReadSecretDto;
+import by.savich.secretservice.dto.SaveSecretDto;
 import by.savich.secretservice.entity.Secret;
 import by.savich.secretservice.service.SecretService;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +17,12 @@ public class SecretController {
     }
 
     @PostMapping("/save")
-    public Secret saveSecret(@RequestBody Secret secret) {
+    public Secret saveSecret(@RequestBody SaveSecretDto secret) {
         return secretService.saveSecret(secret);
     }
 
     @PostMapping("/read")
-    public Secret readSecret(@RequestBody Secret secret) {
+    public Secret readSecret(@RequestBody ReadSecretDto secret) {
         return secretService.getSecretByCodeAndPhrase(secret);
     }
 }
