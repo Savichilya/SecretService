@@ -1,5 +1,7 @@
 package by.savich.secretservice.controller;
 
+import by.savich.secretservice.dto.ReadSecretDto;
+import by.savich.secretservice.dto.SaveSecretDto;
 import by.savich.secretservice.entity.Secret;
 import by.savich.secretservice.service.RandomGenerator;
 import by.savich.secretservice.repository.SecretRepository;
@@ -46,11 +48,11 @@ class SecretControllerIntegrationTest {
 
     @Test
     void shouldSaveSecret() {
-        Secret secret = new Secret();
-        secret.setSecretInformation("any information");
-        secret.setPassPhrase("java");
+        SaveSecretDto saveSecretDto=new SaveSecretDto();
+        saveSecretDto.setSecretInformation("any information");
+        saveSecretDto.setPassPhrase("java");
 
-        HttpEntity<Secret> httpEntity = new HttpEntity<>(secret);
+        HttpEntity<SaveSecretDto> httpEntity = new HttpEntity<>(saveSecretDto);
         ResponseEntity<Secret> response = this.restTemplate.exchange(host + "/secret/save",
                 HttpMethod.POST, httpEntity, Secret.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -60,7 +62,6 @@ class SecretControllerIntegrationTest {
         assertThat(response.getBody().getPassPhrase()).isEqualTo("java");
 
         assertThat(secretRepository.findAll()).isNotNull();
-
     }
 
     @Test
@@ -72,21 +73,18 @@ class SecretControllerIntegrationTest {
         secret.setGeneratedCode(randomGenerator.generateRandomCode(12));
         secretRepository.save(secret);
 
-        Secret checkSecret = new Secret();
-        checkSecret.setPassPhrase("java");
-        checkSecret.setGeneratedCode(secret.getGeneratedCode());
+        ReadSecretDto readSecretDto=new ReadSecretDto();
+        readSecretDto.setPassPhrase("java");
+        readSecretDto.setGeneratedCode(secret.getGeneratedCode());
 
-        HttpEntity<Secret> httpEntity = new HttpEntity<>(checkSecret);
-        Secret resultSecret = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
-                httpEntity, new ParameterizedTypeReference<Secret>() {
-                }).getBody();
+        HttpEntity<ReadSecretDto> httpEntity = new HttpEntity<>(readSecretDto);
 
-        ResponseEntity<Secret> resultSecret2 = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
-                httpEntity, new ParameterizedTypeReference<Secret>() {
-                });
-        assertThat(resultSecret2.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<Secret> resultSecret = this.restTemplate.exchange(host + "/secret/read", HttpMethod.POST,
+                httpEntity, new ParameterizedTypeReference<Secret>() {});
 
-        assertThat(resultSecret).isEqualTo(secret);
+        assertThat(resultSecret.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(resultSecret.getBody()).isEqualTo(secret);
     }
 
 }

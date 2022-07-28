@@ -1,9 +1,9 @@
 package by.savich.secretservice.service;
 
+import by.savich.secretservice.dto.ReadSecretDto;
+import by.savich.secretservice.dto.SaveSecretDto;
 import by.savich.secretservice.entity.Secret;
-import by.savich.secretservice.service.RandomGenerator;
 import by.savich.secretservice.repository.SecretRepository;
-import by.savich.secretservice.service.SecretService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,17 +28,26 @@ class SecretServiceTest {
     @Test
     void shouldSaveSecretWhenCallSaveMethod() {
         Secret secret = new Secret();
-        secretService.saveSecret(secret);
+        SaveSecretDto saveSecretDto=new SaveSecretDto();
+        saveSecretDto.setSecretInformation("qwerty");
+        saveSecretDto.setPassPhrase("pass");
+        secret.setSecretInformation("qwerty");
+        secret.setPassPhrase("pass");
+        secretService.saveSecret(saveSecretDto);
         verify(secretRepository).save(secret);
     }
 
     @Test
     void shouldReturnSecretFromRepositoryWhenCallSecretByGeneratedCodeAndPassPhrase() {
         Secret secret = new Secret();
-        when(secretRepository.getSecretByGeneratedCodeAndPassPhrase("12345", "terminator")).thenReturn(secret);
+        ReadSecretDto readSecretDto=new ReadSecretDto();
+        when(secretRepository.getSecretByGeneratedCodeAndPassPhrase("12345", "terminator")).
+                thenReturn(secret);
         secret.setGeneratedCode("12345");
         secret.setPassPhrase("terminator");
-        Secret resultSecret = secretService.getSecretByCodeAndPhrase(secret);
+        readSecretDto.setGeneratedCode("12345");
+        readSecretDto.setPassPhrase("terminator");
+        Secret resultSecret = secretService.getSecretByCodeAndPhrase(readSecretDto);
         assertThat(resultSecret).isEqualTo(secret);
     }
 }
