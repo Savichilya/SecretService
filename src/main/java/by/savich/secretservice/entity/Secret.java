@@ -1,7 +1,10 @@
 package by.savich.secretservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +14,7 @@ public class Secret {
     private String secretInformation;
     private String passPhrase;
     private String generatedCode;
+    private LocalDateTime validity;
 
     @Id
     @Column(name = "generated_code", length = 15)
@@ -38,6 +42,15 @@ public class Secret {
 
     public void setPassPhrase(String passPhrase) {
         this.passPhrase = passPhrase;
+    }
+
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
+    public LocalDateTime getValidity() {
+        return validity;
+    }
+
+    public void setValidity(LocalDateTime validity) {
+        this.validity = validity;
     }
 
     @Override

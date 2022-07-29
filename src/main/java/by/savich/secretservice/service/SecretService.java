@@ -4,8 +4,9 @@ import by.savich.secretservice.dto.ReadSecretDto;
 import by.savich.secretservice.dto.SaveSecretDto;
 import by.savich.secretservice.entity.Secret;
 import by.savich.secretservice.repository.SecretRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class SecretService {
@@ -20,11 +21,16 @@ public class SecretService {
     }
 
     public Secret saveSecret(SaveSecretDto secretDto) {
-        Secret secret=new Secret();
+        Secret secret = new Secret();
         secret.setSecretInformation(secretDto.getSecretInformation());
         secret.setPassPhrase(secretDto.getPassPhrase());
+        secret.setValidity(secretDto.getValidity());
         secret.setGeneratedCode(randomGenerator.generateRandomCode(12));
         return secretRepository.save(secret);
+    }
+
+    public void cleanExpiredSecrets(LocalDateTime localDateTime) {
+        secretRepository.removeSecretByValidity(localDateTime);
     }
 
     public Secret getSecretByCodeAndPhrase(ReadSecretDto secretDto) {
