@@ -3,9 +3,9 @@ package by.savich.secretservice.service;
 import by.savich.secretservice.dto.ReadSecretDto;
 import by.savich.secretservice.dto.SaveSecretDto;
 import by.savich.secretservice.entity.Secret;
+import by.savich.secretservice.exception.SecretNotFoundException;
 import by.savich.secretservice.repository.SecretRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -30,13 +30,14 @@ public class SecretService {
         return secretRepository.save(secret);
     }
 
-
     public void cleanExpiredSecrets() {
         secretRepository.deleteByValidityBefore(LocalDateTime.now());
     }
 
     public Secret getSecretByCodeAndPhrase(ReadSecretDto secretDto) {
-        return secretRepository.getSecretByGeneratedCodeAndPassPhrase(secretDto.getGeneratedCode(), secretDto.getPassPhrase());
+        return secretRepository.getSecretByGeneratedCodeAndPassPhraseAndValidityAfter(secretDto.getGeneratedCode(),
+                secretDto.getPassPhrase(), LocalDateTime.now()).orElseThrow(() ->
+                new SecretNotFoundException("Secret not found, data is incorrect"));
     }
 
 }

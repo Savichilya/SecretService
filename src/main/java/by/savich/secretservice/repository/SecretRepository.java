@@ -5,12 +5,14 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface SecretRepository extends CrudRepository<Secret, Integer> {
 
     @Transactional
     void deleteByValidityBefore(LocalDateTime localDateTime);
 
-    Secret getSecretByGeneratedCodeAndPassPhrase(String code, String phrase);
+    Optional<Secret> getSecretByGeneratedCodeAndPassPhraseAndValidityAfter(String code, String phrase,
+                                                                           LocalDateTime localDateTime);
 
 }
