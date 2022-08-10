@@ -27,4 +27,5 @@ public class SecretController {
     public Secret readSecret(@Valid @RequestBody ReadSecretDto secret) {
         return secretService.getSecretByCodeAndPhrase(secret);
     }
+
 }

@@ -17,7 +17,7 @@ public class SecretCleanerScheduler {
         this.secretService = secretService;
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 300000)
     public void removingSecrets() {
         log.info("Class instance is: {}", this);
         secretService.cleanExpiredSecrets();
