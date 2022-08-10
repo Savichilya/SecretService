@@ -6,6 +6,8 @@ import by.savich.secretservice.entity.Secret;
 import by.savich.secretservice.service.SecretService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/secret")
 public class SecretController {
@@ -17,12 +19,13 @@ public class SecretController {
     }
 
     @PostMapping("/save")
-    public Secret saveSecret(@RequestBody SaveSecretDto secret) {
+    public Secret saveSecret(@Valid @RequestBody SaveSecretDto secret) {
         return secretService.saveSecret(secret);
     }
 
     @PostMapping("/read")
-    public Secret readSecret(@RequestBody ReadSecretDto secret) {
+    public Secret readSecret(@Valid @RequestBody ReadSecretDto secret) {
         return secretService.getSecretByCodeAndPhrase(secret);
     }
+
 }

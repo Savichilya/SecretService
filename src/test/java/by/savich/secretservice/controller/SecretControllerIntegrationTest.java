@@ -17,6 +17,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,12 +68,13 @@ class SecretControllerIntegrationTest {
     }
 
     @Test
-    void shouldGetSecretByGeneratedCodeAndPassPhrase() {
+    void shouldGetSecretByGeneratedCodeAndPassPhraseAndValidityBefore() {
         Secret secret = new Secret();
 
         secret.setSecretInformation("any information");
         secret.setPassPhrase("java");
         secret.setGeneratedCode(randomGenerator.generateRandomCode(12));
+        secret.setValidity(LocalDateTime.parse("2022-08-09T14:00"));
         secretRepository.save(secret);
 
         ReadSecretDto readSecretDto=new ReadSecretDto();
